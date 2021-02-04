@@ -1,7 +1,7 @@
 import praw
 import configparser
 import time
-from datetime import datetime
+import datetime
 from praw.models import MoreComments
 
 cp = configparser.RawConfigParser()   
@@ -47,7 +47,6 @@ reddit = praw.Reddit(
 #     print('TITLE: {}'.format(sub.title))
 #     print('SCORE: {}'.format(sub.score))
 
-# import datetime
 # params = {'sort':'new', 'limit':None}
 # time_now = datetime.datetime.now()
 # test_search = reddit.subreddit('learnpython').search('timestamp:{0}..{1}'.format(
