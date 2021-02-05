@@ -17,6 +17,41 @@ reddit = praw.Reddit(
     client_secret=current_client_secret
 )
 
+"""Extracts and processes relevant information for a submission
+
+    Args:
+        sub (Submission): the submission we're extracting data from
+
+    Returns:
+        sub_dict: a dictionary of relevant information for this submission
+"""
+def save_submission(sub, comment_sort='top'):
+    sub_dict = {}
+    sub_dict['num_comments'] = sub.num_comments
+    sub_dict['score'] = sub.score
+    sub_dict['selftext'] = sub.selftext
+    sub_dict['stickied'] = sub.stickied
+    sub_dict['title'] = sub.title
+    sub_dict['upvote_ratio'] = sub.upvote_ratio
+    sub_dict['created_utc'] = sub.created_utc
+    sub_dict['year'] = datetime.date.fromtimestamp(sub.created_utc).year
+
+    current_top_comments = []
+    # Set comment sort to best before retrieving comments
+    # The appropriate values for comment_sort include confidence, controversial, new, old, q&a, and top
+    sub.comment_sort = comment_sort 
+    # Limit to, at most, 10 top level comments
+    sub.comment_limit = 10
+    for top_level_comment in sub.comments:
+        if isinstance(top_level_comment, MoreComments):
+            continue
+        current_top_comments.append(top_level_comment.body)
+    
+    sub_dict['top_comments'] = current_top_comments
+
+    return sub_dict
+
+
 """Gets and returns formatted TOP posts (and related comments) by subreddit
 
     Args:
@@ -30,29 +65,7 @@ def get_top_posts(subreddit, limit=None):
     post_dict = {}
     for sub in submissions:
         current_ID = sub.id
-        sub_dict = {}
-        sub_dict['num_comments'] = sub.num_comments
-        sub_dict['score'] = sub.score
-        sub_dict['selftext'] = sub.selftext
-        sub_dict['stickied'] = sub.stickied
-        sub_dict['title'] = sub.title
-        sub_dict['upvote_ratio'] = sub.upvote_ratio
-        sub_dict['created_utc'] = sub.created_utc
-        sub_dict['year'] = datetime.date.fromtimestamp(sub.created_utc).year
-
-        current_top_comments = []
-        # Set comment sort to best before retrieving comments
-        # The appropriate values for comment_sort include confidence, controversial, new, old, q&a, and top
-        sub.comment_sort = 'top' 
-        # Limit to, at most, 10 top level comments
-        sub.comment_limit = 10
-        for top_level_comment in sub.comments:
-            if isinstance(top_level_comment, MoreComments):
-                continue
-            current_top_comments.append(top_level_comment.body)
-        
-        sub_dict['top_comments'] = current_top_comments
-
+        sub_dict = save_submission(sub)
         post_dict[current_ID] = sub_dict
     
     return post_dict
@@ -70,29 +83,7 @@ def get_controversial_posts(subreddit, limit=None):
     post_dict = {}
     for sub in submissions:
         current_ID = sub.id
-        sub_dict = {}
-        sub_dict['num_comments'] = sub.num_comments
-        sub_dict['score'] = sub.score
-        sub_dict['selftext'] = sub.selftext
-        sub_dict['stickied'] = sub.stickied
-        sub_dict['title'] = sub.title
-        sub_dict['upvote_ratio'] = sub.upvote_ratio
-        sub_dict['created_utc'] = sub.created_utc
-        sub_dict['year'] = datetime.date.fromtimestamp(sub.created_utc).year
-
-        current_top_comments = []
-        # Set comment sort to best before retrieving comments
-        # The appropriate values for comment_sort include confidence, controversial, new, old, q&a, and top
-        sub.comment_sort = 'top' 
-        # Limit to, at most, 10 top level comments
-        sub.comment_limit = 10
-        for top_level_comment in sub.comments:
-            if isinstance(top_level_comment, MoreComments):
-                continue
-            current_top_comments.append(top_level_comment.body)
-        
-        sub_dict['top_comments'] = current_top_comments
-
+        sub_dict = save_submission(sub)
         post_dict[current_ID] = sub_dict
     
     return post_dict
@@ -110,29 +101,7 @@ def get_hot_posts(subreddit, limit=None):
     post_dict = {}
     for sub in submissions:
         current_ID = sub.id
-        sub_dict = {}
-        sub_dict['num_comments'] = sub.num_comments
-        sub_dict['score'] = sub.score
-        sub_dict['selftext'] = sub.selftext
-        sub_dict['stickied'] = sub.stickied
-        sub_dict['title'] = sub.title
-        sub_dict['upvote_ratio'] = sub.upvote_ratio
-        sub_dict['created_utc'] = sub.created_utc
-        sub_dict['year'] = datetime.date.fromtimestamp(sub.created_utc).year
-
-        current_top_comments = []
-        # Set comment sort to best before retrieving comments
-        # The appropriate values for comment_sort include confidence, controversial, new, old, q&a, and top
-        sub.comment_sort = 'top' 
-        # Limit to, at most, 10 top level comments
-        sub.comment_limit = 10
-        for top_level_comment in sub.comments:
-            if isinstance(top_level_comment, MoreComments):
-                continue
-            current_top_comments.append(top_level_comment.body)
-        
-        sub_dict['top_comments'] = current_top_comments
-
+        sub_dict = save_submission(sub)
         post_dict[current_ID] = sub_dict
     
     return post_dict
