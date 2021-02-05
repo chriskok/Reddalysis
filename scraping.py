@@ -19,11 +19,11 @@ reddit = praw.Reddit(
 
 """Gets and returns formatted TOP posts (and related comments) by subreddit
 
-Args:
-    subreddit (str): the subreddit we want to scrape posts for
+    Args:
+        subreddit (str): the subreddit we want to scrape posts for
 
-Returns:
-    content_dict: a dictionary of subreddit submission dictionaries. ID as the key and relevant data stored as the value.
+    Returns:
+        content_dict: a dictionary of subreddit submission dictionaries. ID as the key and relevant data stored as the value.
 """
 def get_top_posts(subreddit, limit=None):
     submissions = reddit.subreddit(subreddit).top("all", limit=limit)
@@ -59,11 +59,11 @@ def get_top_posts(subreddit, limit=None):
 
 """Gets and returns formatted CONTROVERSIAL posts (and related comments) by subreddit
 
-Args:
-    subreddit (str): the subreddit we want to scrape posts for
+    Args:
+        subreddit (str): the subreddit we want to scrape posts for
 
-Returns:
-    content_dict: a dictionary of subreddit submission dictionaries. ID as the key and relevant data stored as the value.
+    Returns:
+        content_dict: a dictionary of subreddit submission dictionaries. ID as the key and relevant data stored as the value.
 """
 def get_controversial_posts(subreddit, limit=None):
     submissions = reddit.subreddit(subreddit).controversial("all", limit=limit)
@@ -99,11 +99,11 @@ def get_controversial_posts(subreddit, limit=None):
 
 """Gets and returns formatted HOT posts (and related comments) by subreddit
 
-Args:
-    subreddit (str): the subreddit we want to scrape posts for
+    Args:
+        subreddit (str): the subreddit we want to scrape posts for
 
-Returns:
-    content_dict: a dictionary of subreddit submission dictionaries. ID as the key and relevant data stored as the value.
+    Returns:
+        content_dict: a dictionary of subreddit submission dictionaries. ID as the key and relevant data stored as the value.
 """
 def get_hot_posts(subreddit, limit=None):
     submissions = reddit.subreddit(subreddit).hot(limit=limit)
