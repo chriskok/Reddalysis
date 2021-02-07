@@ -4,6 +4,7 @@ Project to investigate the history of selected subreddits with data science and 
 ## Requirements
 - praw
 - configparser
+- mongoengine
 
 ## Usage
 - go to https://www.reddit.com/prefs/apps to register your app; keep the app client ID and secret
