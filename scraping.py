@@ -28,8 +28,10 @@ reddit = praw.Reddit(
 def get_subreddit_meta(subreddit):
     subreddit_dict = {}
     subreddit = reddit.subreddit(subreddit)
+    
     subreddit_dict['id'] = subreddit.id
     subreddit_dict['created_utc'] = subreddit.created_utc
+    subreddit_dict['year'] = datetime.date.fromtimestamp(subreddit.created_utc).year
     subreddit_dict['description'] = subreddit.description
     subreddit_dict['name'] = subreddit.name
     subreddit_dict['subscribers'] = subreddit.subscribers
