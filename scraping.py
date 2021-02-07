@@ -17,10 +17,31 @@ reddit = praw.Reddit(
     client_secret=current_client_secret
 )
 
+"""Gets and returns formatted subreddit metadata
+
+    Args:
+        subreddit (str): the subreddit we want to get metadata for 
+
+    Returns:
+        subreddit_dict: a dictionary of relevant metadata for the subreddit
+"""
+def get_subreddit_meta(subreddit):
+    subreddit_dict = {}
+    subreddit = reddit.subreddit(subreddit)
+    subreddit_dict['id'] = subreddit.id
+    subreddit_dict['created_utc'] = subreddit.created_utc
+    subreddit_dict['description'] = subreddit.description
+    subreddit_dict['name'] = subreddit.name
+    subreddit_dict['subscribers'] = subreddit.subscribers
+    subreddit_dict['public_description'] = subreddit.public_description
+
+    return subreddit_dict
+
 """Extracts and processes relevant information for a submission
 
     Args:
         sub (Submission): the submission we're extracting data from
+        comment_sort (str): sorting order for comments [confidence, controversial, new, old, q&a, top]
 
     Returns:
         sub_dict: a dictionary of relevant information for this submission
@@ -38,7 +59,6 @@ def save_submission(sub, comment_sort='top'):
 
     current_top_comments = []
     # Set comment sort to best before retrieving comments
-    # The appropriate values for comment_sort include confidence, controversial, new, old, q&a, and top
     sub.comment_sort = comment_sort 
     # Limit to, at most, 10 top level comments
     sub.comment_limit = 10
@@ -51,17 +71,18 @@ def save_submission(sub, comment_sort='top'):
 
     return sub_dict
 
-
 """Gets and returns formatted TOP posts (and related comments) by subreddit
 
     Args:
         subreddit (str): the subreddit we want to scrape posts for
+        limit (int): limit to the number of submissions
+        time_range (str): how far back to look for gathering data [all, day, hour, month, week, year]
 
     Returns:
         content_dict: a dictionary of subreddit submission dictionaries. ID as the key and relevant data stored as the value.
 """
-def get_top_posts(subreddit, limit=None):
-    submissions = reddit.subreddit(subreddit).top("all", limit=limit)
+def get_top_posts(subreddit, limit=None, time_range="all"):
+    submissions = reddit.subreddit(subreddit).top(time_range, limit=limit)
     post_dict = {}
     for sub in submissions:
         current_ID = sub.id
@@ -74,12 +95,14 @@ def get_top_posts(subreddit, limit=None):
 
     Args:
         subreddit (str): the subreddit we want to scrape posts for
+        limit (int): limit to the number of submissions
+        time_range (str): how far back to look for gathering data [all, day, hour, month, week, year]
 
     Returns:
         content_dict: a dictionary of subreddit submission dictionaries. ID as the key and relevant data stored as the value.
 """
-def get_controversial_posts(subreddit, limit=None):
-    submissions = reddit.subreddit(subreddit).controversial("all", limit=limit)
+def get_controversial_posts(subreddit, limit=None, time_range="all"):
+    submissions = reddit.subreddit(subreddit).controversial(time_range, limit=limit)
     post_dict = {}
     for sub in submissions:
         current_ID = sub.id
@@ -92,6 +115,8 @@ def get_controversial_posts(subreddit, limit=None):
 
     Args:
         subreddit (str): the subreddit we want to scrape posts for
+        limit (int): limit to the number of submissions
+        time_range (str): how far back to look for gathering data [all, day, hour, month, week, year]
 
     Returns:
         content_dict: a dictionary of subreddit submission dictionaries. ID as the key and relevant data stored as the value.
@@ -114,13 +139,15 @@ def get_hot_posts(subreddit, limit=None):
 # plus it only allows for 1000 submissions per above queries.
 
 def main():
-    post_dict = get_top_posts('learnpython', 1)
-    print(post_dict)
-    post_dict = get_controversial_posts('learnpython', 1)
-    print(post_dict)
-    post_dict = get_hot_posts('learnpython', 1)
-    print(post_dict)
+    # post_dict = get_top_posts('learnpython', 1, 'month')
+    # print(post_dict)
+    # post_dict = get_controversial_posts('learnpython', 1)
+    # print(post_dict)
+    # post_dict = get_hot_posts('learnpython', 1)
+    # print(post_dict)
 
+    sub_dict = get_subreddit_meta('learnpython')
+    print(sub_dict)
 
 if __name__ == "__main__":
     main()
