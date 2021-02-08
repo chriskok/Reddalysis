@@ -1,4 +1,5 @@
 import datetime
+import argparse
 
 from scrape import get_subreddit_meta, get_top_posts, get_hot_posts, get_controversial_posts
 
@@ -37,25 +38,28 @@ def clear_db():
     db.drop_database('reddalysis')  
 
 def insert_subreddit(data_dict):
-    curr_subreddit = Subreddit(
-        subreddit_id = data_dict['id'],
-        created_utc =  data_dict['created_utc'],
-        year =  data_dict['year'],
-        description =  data_dict['description'],
-        display_name =  data_dict['display_name'],
-        name =  data_dict['name'],
-        subscribers =  data_dict['subscribers'],
-        public_description =  data_dict['public_description'],
-        added = datetime.datetime.now
-    ).save()
+    try:
+        curr_subreddit = Subreddit(
+            subreddit_id = data_dict['id'],
+            created_utc =  data_dict['created_utc'],
+            year =  data_dict['year'],
+            description =  data_dict['description'],
+            display_name =  data_dict['display_name'],
+            name =  data_dict['name'],
+            subscribers =  data_dict['subscribers'],
+            public_description =  data_dict['public_description'],
+            added = datetime.datetime.now
+        ).save()
+    except NotUniqueError:
+        print("{} already in DB".format(data_dict['display_name']))
+        curr_subreddit = Subreddit.objects(subreddit_id=data_dict['id']).first()
 
     return curr_subreddit
 
-def insert_submissions(subreddit, post_dict):
-    for submission_id in post_dict:
-        data_dict = post_dict[submission_id]
+def insert_submission(subreddit, data_dict):
+    try:
         Submission(
-            submission_id = submission_id,
+            submission_id = data_dict['id'],
             num_comments = data_dict['num_comments'],
             score = data_dict['score'],
             selftext = data_dict['selftext'],
@@ -68,31 +72,76 @@ def insert_submissions(subreddit, post_dict):
             top_comments = data_dict['top_comments'],
             added = datetime.datetime.now
         ).save()
+    except NotUniqueError:
+        return 1
+    
+    return 0
+
+def insert_submissions(subreddit, post_dict):
+    duplicate_count = 0
+    for submission_id in post_dict:
+        data_dict = post_dict[submission_id]
+        duplicate_count += insert_submission(subreddit, data_dict)
+
+    return duplicate_count
 
 
-# TODO: Add comments, arguments for command line, tags for submissions, error handling for already written posts
+# TODO: Add comments
 # TODO: Add documentation for how to save data and what to expect if there's already something there
 def main():
-    clear_db()
 
-    sub_dict = get_subreddit_meta('learnpython')
+    if args.clear:
+        clear_db()
+        print('Cleared full database')
+        return
+    
+    if args.delete is not None:
+        subr = Subreddit.objects(display_name__iexact=args.delete).first()
+        delete_count = 0
+        for subm in Submission.objects(subreddit=subr):
+            subm.delete()
+            delete_count += 1
+        print('Deleted {} submissions from r/{}'.format(delete_count, args.delete))
+        return
+
+    subreddit_name = args.subreddit
+    fetch_limit = args.limit
+    time_range = args.time
+
+    # Store current subreddit
+    sub_dict = get_subreddit_meta(subreddit_name)
     curr_subreddit = insert_subreddit(sub_dict)
 
-    # for subr in Subreddit.objects:
-    #     print(subr.display_name)
-    #     print(subr.subscribers)
+    duplicate_count = 0
 
-    # user_obj = User.objects(first_name='mr')
-    # for sub in user_obj:
-    #     print(curr_user.last_name)
+    # Store top submissions
+    post_dict = get_top_posts(subreddit_name, fetch_limit, time_range)
+    duplicate_count += insert_submissions(curr_subreddit, post_dict)
 
+    # Store hot submissions
+    post_dict = get_hot_posts(subreddit_name, fetch_limit)
+    duplicate_count += insert_submissions(curr_subreddit, post_dict)
 
-    post_dict = get_top_posts('learnpython', 3, 'year')
-    insert_submissions(curr_subreddit, post_dict)
+    # Store controversial submissions
+    post_dict = get_controversial_posts(subreddit_name, fetch_limit, time_range)
+    duplicate_count += insert_submissions(curr_subreddit, post_dict)
 
-    for subm in Submission.objects:
-        print(subm.title)
-        print(subm.score)
+    if (duplicate_count > 0): print("Skipped {} posts already in DB".format(duplicate_count))
+
+    if (fetch_limit is not None): print('Added {} new posts to the DB'.format(fetch_limit*3 - duplicate_count))
+    else: print('Added {} new posts to the DB'.format(3000 - duplicate_count))
+
+    # for subm in Submission.objects:
+    #     print(subm.title)
+    #     print(subm.score)
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-d', '--delete', default=None, help="delete all data from a specific subreddit")
+    parser.add_argument('-c', '--clear', default=False, action="store_true", help="fully clear the database before starting")
+    parser.add_argument('-l', '--limit', type=int, default=None, help="limit to number of posts")
+    parser.add_argument('-s', '--subreddit', help="subreddit to scrape and store data from")
+    parser.add_argument('-t', '--time', default='all', help="time range to grab top and controversial posts from [all, day, hour, month, week, year]")
+    args = parser.parse_args()
+
     main()

@@ -51,6 +51,7 @@ def get_subreddit_meta(subreddit):
 """
 def save_submission(sub, comment_sort='top'):
     sub_dict = {}
+    sub_dict['id'] = sub.id
     sub_dict['num_comments'] = sub.num_comments
     sub_dict['score'] = sub.score
     sub_dict['selftext'] = sub.selftext
