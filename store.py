@@ -37,6 +37,14 @@ class Submission(Document):
 def clear_db():
     db.drop_database('reddalysis')  
 
+"""Insert metadata dictionary for a specific subreddit into the database
+
+    Args:
+        data_dict (dict): a dictionary of relevant metadata for the subreddit
+
+    Returns:
+        curr_subreddit: reference to the created Subreddit document
+"""
 def insert_subreddit(data_dict):
     try:
         curr_subreddit = Subreddit(
@@ -56,6 +64,15 @@ def insert_subreddit(data_dict):
 
     return curr_subreddit
 
+"""Insert data dictionary for a post into the database
+
+    Args:
+        subreddit (Subreddit): a reference to the created Subreddit document
+        data_dict (dict): a dictionary of relevant information for this submission
+
+    Returns:
+        duplicate (int): whether or not the current post is already in the DB (1 if duplicated, 0 otherwise)
+"""
 def insert_submission(subreddit, data_dict):
     try:
         Submission(
@@ -77,6 +94,15 @@ def insert_submission(subreddit, data_dict):
     
     return 0
 
+"""Insert all data from a particular subreddit into the DB
+
+    Args:
+        subreddit (Subreddit): a reference to the created Subreddit document
+        post_dict (dict): a dictionary of subreddit submission dictionaries.
+
+    Returns:
+        duplicate_count (int): a total count of how many duplicates there were
+"""
 def insert_submissions(subreddit, post_dict):
     duplicate_count = 0
     for submission_id in post_dict:
@@ -85,9 +111,8 @@ def insert_submissions(subreddit, post_dict):
 
     return duplicate_count
 
+# TODO: Add options to choose between TOP, CONTRO and HOT or all three.
 
-# TODO: Add comments
-# TODO: Add documentation for how to save data and what to expect if there's already something there
 def main():
 
     if args.clear:
