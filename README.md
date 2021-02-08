@@ -2,9 +2,9 @@
 Project to investigate the history of selected subreddits with data science and machine learning
 
 ## Requirements
-- praw
-- configparser
-- mongoengine
+- [Python](https://www.python.org/downloads/)
+- [MongoDB](https://docs.mongodb.com/manual/administration/install-community/)
+- Python libraries in requirement.txt
 
 ## Usage
 - go to https://www.reddit.com/prefs/apps to register your app; keep the app client ID and secret
