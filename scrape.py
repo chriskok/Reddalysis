@@ -33,6 +33,7 @@ def get_subreddit_meta(subreddit):
     subreddit_dict['created_utc'] = subreddit.created_utc
     subreddit_dict['year'] = datetime.date.fromtimestamp(subreddit.created_utc).year
     subreddit_dict['description'] = subreddit.description
+    subreddit_dict['display_name'] = subreddit.display_name
     subreddit_dict['name'] = subreddit.name
     subreddit_dict['subscribers'] = subreddit.subscribers
     subreddit_dict['public_description'] = subreddit.public_description
@@ -141,15 +142,15 @@ def get_hot_posts(subreddit, limit=None):
 # plus it only allows for 1000 submissions per above queries.
 
 def main():
-    # post_dict = get_top_posts('learnpython', 1, 'month')
-    # print(post_dict)
+    post_dict = get_top_posts('learnpython', 1, 'month')
+    print(post_dict)
     # post_dict = get_controversial_posts('learnpython', 1)
     # print(post_dict)
     # post_dict = get_hot_posts('learnpython', 1)
     # print(post_dict)
 
-    sub_dict = get_subreddit_meta('learnpython')
-    print(sub_dict)
+    # sub_dict = get_subreddit_meta('learnpython')
+    # print(sub_dict)
 
 if __name__ == "__main__":
     main()
