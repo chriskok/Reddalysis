@@ -2,36 +2,9 @@ import datetime
 import argparse
 
 from scrape import get_subreddit_meta, get_top_posts, get_hot_posts, get_controversial_posts
-
+from db_config import Subreddit, Submission
 from mongoengine import *
 db = connect('reddalysis', host='localhost', port=27017)
-
-# Subreddit class to store all necessary metadata regarding the subreddit
-class Subreddit(Document):
-    subreddit_id = StringField(required=True, unique=True)
-    created_utc = FloatField()
-    year = IntField()
-    description = StringField()
-    display_name = StringField(required=True)
-    name = StringField(required=True)
-    subscribers = IntField()
-    public_description = StringField()
-    added = DateTimeField(default=datetime.datetime.now)
-
-# Submission class to store all relevant data to the post
-class Submission(Document):
-    submission_id = StringField(required=True, unique=True)
-    num_comments = IntField()
-    score = IntField()
-    selftext = StringField(required=True)
-    stickied = BooleanField()
-    title = StringField(required=True)
-    upvote_ratio = FloatField()
-    created_utc = FloatField()
-    year = IntField()
-    subreddit = ReferenceField(Subreddit)
-    top_comments = ListField(StringField())
-    added = DateTimeField(default=datetime.datetime.now)
 
 # Use only if you want to refresh your database
 def clear_db():
@@ -112,7 +85,6 @@ def insert_submissions(subreddit, post_dict):
     return duplicate_count
 
 # TODO: Add options to choose between TOP, CONTRO and HOT or all three.
-
 def main():
 
     if args.clear:
