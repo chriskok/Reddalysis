@@ -1,7 +1,7 @@
 import datetime
 import argparse
 
-from scrape import get_subreddit_meta, get_top_posts, get_hot_posts, get_controversial_posts
+from scrape import get_subreddit_meta, get_top_posts, get_hot_posts, get_controversial_posts, get_random_posts
 from db_config import Subreddit, Submission
 from mongoengine import *
 db = connect('reddalysis', host='localhost', port=27017)
@@ -85,6 +85,7 @@ def insert_submissions(subreddit, post_dict):
     return duplicate_count
 
 # TODO: Add options to choose between TOP, CONTRO and HOT or all three.
+# TODO: Add tags to the posts to know if these posts were taken from TOP, HOT, by year, etc.
 def main():
 
     if args.clear:
@@ -110,23 +111,33 @@ def main():
     curr_subreddit = insert_subreddit(sub_dict)
 
     duplicate_count = 0
+    scraped_count = 0
 
     # Store top submissions
     post_dict = get_top_posts(subreddit_name, fetch_limit, time_range)
+    scraped_count += len(post_dict)
     duplicate_count += insert_submissions(curr_subreddit, post_dict)
 
     # Store hot submissions
     post_dict = get_hot_posts(subreddit_name, fetch_limit)
+    scraped_count += len(post_dict)
     duplicate_count += insert_submissions(curr_subreddit, post_dict)
 
     # Store controversial submissions
     post_dict = get_controversial_posts(subreddit_name, fetch_limit, time_range)
+    scraped_count += len(post_dict)
+    duplicate_count += insert_submissions(curr_subreddit, post_dict)
+
+    # Store random submissions
+    random_limit = fetch_limit if fetch_limit is not None else 1000
+    post_dict = get_random_posts(subreddit_name, random_limit)
+    scraped_count += len(post_dict)
     duplicate_count += insert_submissions(curr_subreddit, post_dict)
 
     if (duplicate_count > 0): print("Skipped {} posts already in DB".format(duplicate_count))
 
-    if (fetch_limit is not None): print('Added {} new posts to the DB'.format(fetch_limit*3 - duplicate_count))
-    else: print('Added {} new posts to the DB'.format(3000 - duplicate_count))
+    if (fetch_limit is not None): print('Added {} new posts to the DB'.format(scraped_count - duplicate_count))
+    else: print('Added {} new posts to the DB'.format(scraped_count * 1000 - duplicate_count))
 
     # for subm in Submission.objects:
     #     print(subm.title)

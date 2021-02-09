@@ -17,6 +17,9 @@ reddit = praw.Reddit(
     client_secret=current_client_secret
 )
 
+# Time to rest between reddit random post requests
+TIME_BETWEEN_REQUESTS = 2.1
+
 """Gets and returns formatted subreddit metadata
 
     Args:
@@ -83,7 +86,7 @@ def save_submission(sub, comment_sort='top'):
         time_range (str): how far back to look for gathering data [all, day, hour, month, week, year]
 
     Returns:
-        content_dict: a dictionary of subreddit submission dictionaries. ID as the key and relevant data stored as the value.
+        post_dict: a dictionary of subreddit submission dictionaries. ID as the key and relevant data stored as the value.
 """
 def get_top_posts(subreddit, limit=None, time_range="all"):
     submissions = reddit.subreddit(subreddit).top(time_range, limit=limit)
@@ -103,7 +106,7 @@ def get_top_posts(subreddit, limit=None, time_range="all"):
         time_range (str): how far back to look for gathering data [all, day, hour, month, week, year]
 
     Returns:
-        content_dict: a dictionary of subreddit submission dictionaries. ID as the key and relevant data stored as the value.
+        post_dict: a dictionary of subreddit submission dictionaries. ID as the key and relevant data stored as the value.
 """
 def get_controversial_posts(subreddit, limit=None, time_range="all"):
     submissions = reddit.subreddit(subreddit).controversial(time_range, limit=limit)
@@ -123,7 +126,7 @@ def get_controversial_posts(subreddit, limit=None, time_range="all"):
         time_range (str): how far back to look for gathering data [all, day, hour, month, week, year]
 
     Returns:
-        content_dict: a dictionary of subreddit submission dictionaries. ID as the key and relevant data stored as the value.
+        post_dict: a dictionary of subreddit submission dictionaries. ID as the key and relevant data stored as the value.
 """
 def get_hot_posts(subreddit, limit=None):
     submissions = reddit.subreddit(subreddit).hot(limit=limit)
@@ -135,6 +138,31 @@ def get_hot_posts(subreddit, limit=None):
     
     return post_dict
 
+"""Gets and returns formatted RANDOM posts (and related comments) by subreddit
+
+    Args:
+        subreddit (str): the subreddit we want to scrape posts for
+        limit (int): limit to the number of submissions
+
+    Returns:
+        post_dict: a dictionary of subreddit submission dictionaries. ID as the key and relevant data stored as the value.
+"""
+def get_random_posts(subreddit, limit=1000):
+    post_dict = {}
+    for i in range(limit):
+        submission = reddit.subreddit(subreddit).random()
+        if (submission is None): 
+            print('r/{} DOES NOT allow RANDOM scraping.'.format(subreddit))
+            return {}
+        sub_dict = save_submission(submission)
+        current_ID = submission.id
+        post_dict[current_ID] = sub_dict
+        time.sleep(TIME_BETWEEN_REQUESTS)
+        if (i % 100 == 0 and i > 0): print('{}/{} random posts scraped'.format(i, limit))
+    
+    return post_dict
+
+
 # TODO: include functions to grab through random and search requests - will be able to give us posts not found above
 # NOTE: its more difficult because random only returns one at a time so we might have to send requests 
 # and fill in as necessary, keeping in mind the 2 second request interval
@@ -143,12 +171,14 @@ def get_hot_posts(subreddit, limit=None):
 # plus it only allows for 1000 submissions per above queries.
 
 def main():
-    post_dict = get_top_posts('learnpython', 1, 'month')
-    print(post_dict)
+    # post_dict = get_top_posts('learnpython', 1, 'month')
+    # print(post_dict)
     # post_dict = get_controversial_posts('learnpython', 1)
     # print(post_dict)
     # post_dict = get_hot_posts('learnpython', 1)
     # print(post_dict)
+    post_dict = get_random_posts('learnpython', 1)
+    print(post_dict)
 
     # sub_dict = get_subreddit_meta('learnpython')
     # print(sub_dict)
