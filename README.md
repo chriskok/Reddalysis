@@ -20,3 +20,11 @@ Project to investigate the history of selected subreddits with data science and 
   - e.g. `python store.py -l 15 -s learnpython`
 - Limit the time range of data collected: `python store.py -t <TIME LIMIT> -s <SUBREDDIT>` 
   - e.g. `python store.py -t year -s learnpython`
+
+
+## setup
+```
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+```
