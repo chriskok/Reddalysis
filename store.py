@@ -101,6 +101,10 @@ def main():
             delete_count += 1
         print('Deleted {} submissions from r/{}'.format(delete_count, args.delete))
         return
+    
+    if args.subreddit is None:
+        print('Please input subreddit with -s or --subreddit flag (see -h/--help for more details)')
+        return
 
     subreddit_name = args.subreddit
     fetch_limit = args.limit
