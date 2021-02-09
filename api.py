@@ -1,3 +1,4 @@
+# https://fastapi.tiangolo.com/tutorial/
 from fastapi import FastAPI, Form
 import sqlalchemy
 from sqlalchemy import create_engine
@@ -5,7 +6,9 @@ from sqlalchemy import create_engine
 app = FastAPI()
 
 # https://www.cdata.com/kb/tech/mongodb-python-sqlalchemy.rst
-engine = create_engine("mongodb///?Server=MyServer&Port=27017&Database=test&User=test&Password=Password")
+# engine = create_engine("mongodb///?Server=MyServer&Port=27017&Database=test&User=test&Password=Password")
+
+# auto generated docs: http://127.0.0.1:8000/docs#/
 
 @app.get("/")
 async def root():
