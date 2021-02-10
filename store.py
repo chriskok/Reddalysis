@@ -1,5 +1,7 @@
 import datetime
 import argparse
+import os 
+import pickle 
 
 from scrape import get_subreddit_meta, get_top_posts, get_hot_posts, get_controversial_posts, get_random_posts
 from db_config import Subreddit, Submission
@@ -84,6 +86,17 @@ def insert_submissions(subreddit, post_dict):
 
     return duplicate_count
 
+"""Saved data to pickle files instead of dictionary
+
+    Args:
+        subreddit (Subreddit): a reference to the created Subreddit document
+        post_dict (dict): a dictionary of subreddit submission dictionaries.
+        query_type (str): type of query (hot, top, etc.)
+"""
+def save_submissions_to_pickle(subreddit, post_dict, query_type):
+    with open('./data/{}_{}.pickle'.format(subreddit.display_name.lower(), query_type), 'wb') as handle:
+        pickle.dump(post_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
 # TODO: Add options to choose between TOP, CONTRO and HOT or all three.
 # TODO: Add tags to the posts to know if these posts were taken from TOP, HOT, by year, etc.
 def main():
@@ -105,6 +118,10 @@ def main():
     if args.subreddit is None:
         print('Please input subreddit with -s or --subreddit flag (see -h/--help for more details)')
         return
+    
+    if args.pickle is True:
+        if not os.path.exists('/data'):
+            os.makedirs('/data')
 
     subreddit_name = args.subreddit
     fetch_limit = args.limit
@@ -120,28 +137,32 @@ def main():
     # Store top submissions
     post_dict = get_top_posts(subreddit_name, fetch_limit, time_range)
     scraped_count += len(post_dict)
-    duplicate_count += insert_submissions(curr_subreddit, post_dict)
+    if (args.pickle): save_submissions_to_pickle(curr_subreddit, post_dict, 'top')
+    else: duplicate_count += insert_submissions(curr_subreddit, post_dict)
 
     # Store hot submissions
     post_dict = get_hot_posts(subreddit_name, fetch_limit)
     scraped_count += len(post_dict)
-    duplicate_count += insert_submissions(curr_subreddit, post_dict)
+    if (args.pickle): save_submissions_to_pickle(curr_subreddit, post_dict, 'hot')
+    else: duplicate_count += insert_submissions(curr_subreddit, post_dict)
 
     # Store controversial submissions
     post_dict = get_controversial_posts(subreddit_name, fetch_limit, time_range)
     scraped_count += len(post_dict)
-    duplicate_count += insert_submissions(curr_subreddit, post_dict)
+    if (args.pickle): save_submissions_to_pickle(curr_subreddit, post_dict, 'controversial')
+    else: duplicate_count += insert_submissions(curr_subreddit, post_dict)
 
     # Store random submissions
     random_limit = fetch_limit if fetch_limit is not None else 1000
     post_dict = get_random_posts(subreddit_name, random_limit)
     scraped_count += len(post_dict)
-    duplicate_count += insert_submissions(curr_subreddit, post_dict)
+    if (args.pickle): save_submissions_to_pickle(curr_subreddit, post_dict, 'random')
+    else: duplicate_count += insert_submissions(curr_subreddit, post_dict)
 
     if (duplicate_count > 0): print("Skipped {} posts already in DB".format(duplicate_count))
 
-    if (fetch_limit is not None): print('Added {} new posts to the DB'.format(scraped_count - duplicate_count))
-    else: print('Added {} new posts to the DB'.format(scraped_count * 1000 - duplicate_count))
+    if (fetch_limit is not None): print('Saved {} new posts'.format(scraped_count - duplicate_count))
+    else: print('Saved {} new posts'.format(scraped_count * 1000 - duplicate_count))
 
     # for subm in Submission.objects:
     #     print(subm.title)
@@ -151,6 +172,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--delete', default=None, help="delete all data from a specific subreddit")
     parser.add_argument('-c', '--clear', default=False, action="store_true", help="fully clear the database before starting")
+    parser.add_argument('-p', '--pickle', default=False, action="store_true", help="save to pickle files instead of the database")
     parser.add_argument('-l', '--limit', type=int, default=None, help="limit to number of posts")
     parser.add_argument('-s', '--subreddit', help="subreddit to scrape and store data from")
     parser.add_argument('-t', '--time', default='all', help="time range to grab top and controversial posts from [all, day, hour, month, week, year]")
