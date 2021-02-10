@@ -14,15 +14,21 @@ Project to investigate the history of selected subreddits with data science and 
 
 ## Database Commands
 - Clear the entire database: `python store.py -c` 
+
 - Delete all saved posts related to a specific Subreddit: `python store.py -d <SUBREDDIT>` 
   - e.g. `python store.py -d learnpython` 
+
 - Limit the amount of data collected: `python store.py -l <LIMIT> -s <SUBREDDIT>` 
   - e.g. `python store.py -l 15 -s learnpython`
+
 - Limit the time range of data collected: `python store.py -t <TIME LIMIT> -s <SUBREDDIT>` 
   - e.g. `python store.py -t year -s learnpython`
 
+- Save the data as pickle files: `python store.py -p -s <SUBREDDIT>` 
+  - e.g. `python store.py -p -s learnpython`
 
-## setup
+
+## Environment Set Up
 ```
 python -m venv venv
 venv\Scripts\activate
