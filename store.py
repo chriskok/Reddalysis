@@ -86,15 +86,31 @@ def insert_submissions(subreddit, post_dict):
 
     return duplicate_count
 
-"""Saved data to pickle files instead of dictionary
+"""Save subreddit metadata to pickle files instead of dictionary
 
     Args:
-        subreddit (Subreddit): a reference to the created Subreddit document
+        data_dict (dict): a dictionary of relevant metadata for the subreddit
+    
+    Returns:
+        curr_subreddit_name: name of the current subreddit
+
+"""
+def save_subreddit_to_pickle(data_dict):
+    curr_subreddit_name = data_dict['display_name'].lower()
+    with open('./data/{}_{}.pickle'.format(curr_subreddit_name, 'submeta'), 'wb') as handle:
+        pickle.dump(data_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    
+    return curr_subreddit_name
+
+"""Save data to pickle files instead of dictionary
+
+    Args:
+        subreddit_name (str): name of the current subreddit
         post_dict (dict): a dictionary of subreddit submission dictionaries.
         query_type (str): type of query (hot, top, etc.)
 """
-def save_submissions_to_pickle(subreddit, post_dict, query_type):
-    with open('./data/{}_{}.pickle'.format(subreddit.display_name.lower(), query_type), 'wb') as handle:
+def save_submissions_to_pickle(subreddit_name, post_dict, query_type):
+    with open('./data/{}_{}.pickle'.format(subreddit_name, query_type), 'wb') as handle:
         pickle.dump(post_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 # TODO: Add options to choose between TOP, CONTRO and HOT or all three.
@@ -129,7 +145,7 @@ def main():
 
     # Store current subreddit
     sub_dict = get_subreddit_meta(subreddit_name)
-    curr_subreddit = insert_subreddit(sub_dict)
+    curr_subreddit = save_subreddit_to_pickle(sub_dict) if args.pickle else insert_subreddit(sub_dict)
 
     duplicate_count = 0
     scraped_count = 0
@@ -162,7 +178,7 @@ def main():
     if (duplicate_count > 0): print("Skipped {} posts already in DB".format(duplicate_count))
 
     if (fetch_limit is not None): print('Saved {} new posts'.format(scraped_count - duplicate_count))
-    else: print('Saved {} new posts'.format(scraped_count * 1000 - duplicate_count))
+    else: print('Saved {} new posts'.format(scraped_count - duplicate_count))
 
     # for subm in Submission.objects:
     #     print(subm.title)
