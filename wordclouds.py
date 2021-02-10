@@ -46,6 +46,14 @@ def remove_non_ascii(words):
         new_words.append(new_word)
     return new_words
 
+def remove_hyperlinks(words):
+    """Remove hyperlinks from list of tokenized words"""
+    new_words = []
+    for word in words:
+        new_word = re.sub(r'^https?:\/\/.*[\r\n]*', '', word)
+        new_words.append(new_word)
+    return new_words
+
 def to_lowercase(words):
     """Convert all characters to lowercase from list of tokenized words"""
     new_words = []
@@ -81,6 +89,7 @@ def lemmatize_verbs(words):
     return lemmas
 
 def normalize(words):
+    words = remove_hyperlinks(words)
     words = remove_non_ascii(words)
     words = to_lowercase(words)
     words = remove_punctuation(words)
@@ -186,7 +195,7 @@ def main():
 
     # To create the BOW pickle files
     # subreddit_to_bow('learnmachinelearning')
-    # subreddit_to_yearly_bow('learnmachinelearning')
+    subreddit_to_yearly_bow('learnmachinelearning')
 
     # To get the saved BOWs
     # get_bow('learnmachinelearning')
