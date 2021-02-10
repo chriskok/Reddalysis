@@ -116,6 +116,12 @@ def subreddit_to_bow(subreddit_name):
         curr_post = full_post_dict[post]
         full_text = full_text + curr_post['title'] + " " + curr_post['selftext'] + " " + ' '.join(curr_post['top_comments']) + " "
     
+    bow = process_bow(full_text)
+    with open('./data/{}_{}.pickle'.format(subreddit_name, 'bow'), 'wb') as handle:
+        pickle.dump(bow, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    
+    print('created bow file for: {}'.format(subreddit_name))
+
     return process_bow(full_text)
 
 def subreddit_to_yearly_bow(subreddit_name):
@@ -135,7 +141,20 @@ def subreddit_to_yearly_bow(subreddit_name):
     for year in yearly_texts:
         yearly_bow[year] = process_bow(yearly_texts[year])
 
+    with open('./data/{}_{}.pickle'.format(subreddit_name, 'yearly_bow'), 'wb') as handle:
+        pickle.dump(yearly_bow, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    
+    print('created yearly bow file for: {}'.format(subreddit_name))
+
     return yearly_bow
+
+def get_bow(subreddit_name):
+    with open('data/{}_bow.pickle'.format(subreddit_name), 'rb') as handle:
+        return pickle.load(handle)
+
+def get_yearly_bow(subreddit_name):
+    with open('data/{}_yearly_bow.pickle'.format(subreddit_name), 'rb') as handle:
+        return pickle.load(handle)
 
 def main():
     # # USING MONGODB
@@ -165,9 +184,13 @@ def main():
     # plt.hist(y)
     # plt.show()
 
-    # print(subreddit_to_bow('learnmachinelearning'))
+    # To create the BOW pickle files
+    # subreddit_to_bow('learnmachinelearning')
+    # subreddit_to_yearly_bow('learnmachinelearning')
 
-    print(subreddit_to_yearly_bow('learnmachinelearning'))
+    # To get the saved BOWs
+    # get_bow('learnmachinelearning')
+    print(get_yearly_bow('learnmachinelearning')[2016])
 
 if __name__ == "__main__":
     main()
