@@ -4,6 +4,7 @@ Project to investigate the history of selected subreddits with data science and 
 ## Requirements
 - [Python](https://www.python.org/downloads/)
 - [MongoDB](https://docs.mongodb.com/manual/administration/install-community/)
+- [NodeJS](https://nodejs.org/en/download/)
 - Python libraries in requirement.txt
 
 ## Usage
@@ -11,6 +12,10 @@ Project to investigate the history of selected subreddits with data science and 
 - duplicate 'example.config' and rename to 'client.config'; change the client ID and secret to your own app's codes 
 - get and store desired data (as pickle files): `python store.py -s <SUBREDDIT> -p` 
   - e.g. `python store.py -s learnpython -p`
+
+## Express Webserver Commands
+- Install the necessary node dependencies: `npm install`
+- Start the node webserver: `npm start`
 
 ## Database Commands
 - Clear the entire database: `python store.py -c` 
