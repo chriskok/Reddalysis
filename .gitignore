@@ -1,6 +1,8 @@
 client.config
 .vscode/
 /data
+/node_modules
+*.zip
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
