@@ -194,12 +194,12 @@ def main():
     # plt.show()
 
     # To create the BOW pickle files
-    # subreddit_to_bow('learnmachinelearning')
+    subreddit_to_bow('learnmachinelearning')
     subreddit_to_yearly_bow('learnmachinelearning')
 
     # To get the saved BOWs
     # get_bow('learnmachinelearning')
-    print(get_yearly_bow('learnmachinelearning')[2016])
+    # print(get_yearly_bow('learnmachinelearning')[2016])
 
 if __name__ == "__main__":
     main()

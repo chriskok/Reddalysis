@@ -46,10 +46,32 @@
   <div class="jumbotron"> <p>
   Welcome to Project Reddalysis, the subreddit contextualizer app. 
   </p></div>
+
+  
 </div>
 
-<!-- Create a div where the graph will take place -->
-<div id="my_dataviz"></div>
+<div class="mx-5">
+  <form>
+    <div class="form-group">
+      <label for="chosen_sub">Subreddit name:</label><br>
+      <input class="form-control" list="chosen_subs" name="chosen_sub" id="chosen_sub">
+  
+      <datalist id="chosen_subs">
+        <option value="learnmachinelearning">
+        <option value="python">
+        <option value="machinelearning">
+        <option value="askreddit">
+        <option value="worldnews">
+      </datalist>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  
+  </form>
+  
+  <!-- Create a div where the graph will take place -->
+  <div id="my_dataviz"></div>
+</div>
+
 
 </body>
 </html>

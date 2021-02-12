@@ -12,6 +12,7 @@ Project to investigate the history of selected subreddits with data science and 
 - duplicate 'example.config' and rename to 'client.config'; change the client ID and secret to your own app's codes 
 - get and store desired data (as pickle files): `python store.py -s <SUBREDDIT> -p` 
   - e.g. `python store.py -s learnpython -p`
+- preprocess the data (right now it's just with wordclouds): `python wordclouds.py`
 
 ## Express Webserver Commands
 - Install the necessary node dependencies: `npm install`
