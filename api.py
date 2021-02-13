@@ -1,6 +1,8 @@
 # https://fastapi.tiangolo.com/tutorial/
 from fastapi import FastAPI, Form
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+
 from wordclouds import get_bow, get_yearly_bow
 
 app = FastAPI()
@@ -17,10 +19,16 @@ app.add_middleware(
 async def root():
    return {"message": "Hello World"}
 
-@app.get("/api/v1/recommendations")
-async def recommendations(anime_code: int = Query(""), n_recommendations: int = Query(5)):    
-    if anime_code:
-        recommendations = obtain_recommendations(anime_code, n_recommendations)
-        return JSONResponse(content=recommendations, status_code=200)
+@app.get("/api/v1/get_bow")
+async def bow(subreddit_name: str):    
+    if subreddit_name:
+        return JSONResponse(content=get_bow(subreddit_name), status_code=200)
 
-    return JSONResponse(content={"Error": "The anime code is missing"}, status_code=400)
+    return JSONResponse(content={"Error": "The subreddit name is missing"}, status_code=400)
+
+@app.get("/api/v1/get_yearly_bow")
+async def yearly_bow(subreddit_name: str):    
+    if subreddit_name:
+        return JSONResponse(content=get_yearly_bow(subreddit_name), status_code=200)
+
+    return JSONResponse(content={"Error": "The subreddit name is missing"}, status_code=400)

@@ -6,33 +6,29 @@ function fetchJson(url, kwds) {
 		},
 		credentials: "include",
 		...kwds,
-	}).then(res => res.json());
+	}).then(res => res.json())
+	.then((responseData) => {
+		return responseData;
+	});
 }
 
-function getNames() {
+function getTest() {
 	return fetchJson(`http://localhost:8000/`);
 }
 
-function getRecommendations(animeId, quantity = 5) {
+function getBow(subreddit_name) {
 	return fetchJson(
-		`localhost:8000/api/v1/recommendations?anime_code=${animeId}&n_recommendations=${quantity}`
+		`http://localhost:8000/api/v1/get_bow?subreddit_name=${subreddit_name}`
+	);
+}
+
+function getYearlyBow(subreddit_name) {
+	return fetchJson(
+		`http://localhost:8000/api/v1/get_yearly_bow?subreddit_name=${subreddit_name}`
 	);
 }
 
 function parse_input() {
-    console.log(document.getElementById('chosen_sub').value);
+	const sub_name = document.getElementById('chosen_sub').value;
+	getYearlyBow(sub_name).then(response => console.log(response));
 }
-
-
-// Joel's Example
-
-// componentDidMount = async () => {
-//     const animeId = this.props.match.params.searchId;
-//     const referenceAnime = await getAnime(animeId);
-//     const recommendations = await getRecommendations(animeId, 15);
-//     this.setState({ referenceAnime, recommendations });
-// };
-
-// const animeToDisplay = this.state.recommendations[
-//     recCategoryMapping[this.state.recCategory]
-// ];

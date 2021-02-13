@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pickle
+import argparse
 from os import path
 
 import re, string, unicodedata
@@ -205,13 +206,18 @@ def main():
     # plt.hist(y)
     # plt.show()
 
-    # To create the BOW pickle files
-    # subreddit_to_bow('python')
-    # subreddit_to_yearly_bow('learnmachinelearning')
+    subreddit_name = args.subreddit
 
-    # To get the saved BOWs
-    # get_bow('learnmachinelearning')
-    print(get_yearly_bow('learnmachinelearning')[2016])
+    # To create the BOW pickle files
+    subreddit_to_bow(subreddit_name)
+    subreddit_to_yearly_bow(subreddit_name)
+
+    # # To get the saved BOWs
+    # print(get_bow('learnmachinelearning'))
+    # print(get_yearly_bow('learnmachinelearning')[2016])
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-s', '--subreddit', help="subreddit to scrape and store data from")
+    args = parser.parse_args()
     main()

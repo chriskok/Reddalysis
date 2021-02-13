@@ -12,7 +12,8 @@ Project to investigate the history of selected subreddits with data science and 
 - duplicate 'example.config' and rename to 'client.config'; change the client ID and secret to your own app's codes 
 - get and store desired data (as pickle files): `python store.py -s <SUBREDDIT> -p` 
   - e.g. `python store.py -s learnpython -p`
-- preprocess the data (right now it's just with wordclouds): `python wordclouds.py`
+- preprocess the data (right now it's just with wordclouds): `python wordclouds.py -s <SUBREDDIT>`
+  - e.g. `python wordclouds.py -s learnpython`
 - start the API: `uvicorn api:app --reload`
 - start the node webserver: `npm start`
   - If it's your first time, install the necessary node dependencies: `npm install`
