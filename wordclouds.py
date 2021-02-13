@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pickle
+from os import path
 
 import re, string, unicodedata
 import nltk
@@ -18,6 +19,11 @@ db = connect('reddalysis', host='localhost', port=27017)
 ############################################
 
 def get_submissions(subreddit_name):
+    data_path = 'data/{}_top.pickle'.format(subreddit_name)
+    if (not path.exists(data_path)): 
+        print("ERROR: Files for r/{} not found. Please run \'python store.py -s {} -p\' first.".format(subreddit_name, subreddit_name))
+        return None
+
     full_post_dict = {}
     # USING PICKLE FILES
     with open('data/{}_top.pickle'.format(subreddit_name), 'rb') as handle:
@@ -119,6 +125,7 @@ def process_bow(words):
 
 def subreddit_to_bow(subreddit_name):
     full_post_dict = get_submissions(subreddit_name)
+    if (full_post_dict is None): return
 
     full_text = ""
     for post in full_post_dict:
@@ -135,6 +142,7 @@ def subreddit_to_bow(subreddit_name):
 
 def subreddit_to_yearly_bow(subreddit_name):
     full_post_dict = get_submissions(subreddit_name)
+    if (full_post_dict is None): return
 
     yearly_texts = {}
     for post in full_post_dict:
@@ -158,11 +166,15 @@ def subreddit_to_yearly_bow(subreddit_name):
     return yearly_bow
 
 def get_bow(subreddit_name):
-    with open('data/{}_bow.pickle'.format(subreddit_name), 'rb') as handle:
+    data_path = 'data/{}_bow.pickle'.format(subreddit_name)
+    if (not path.exists(data_path)): subreddit_to_bow(subreddit_name)
+    with open(data_path, 'rb') as handle:
         return pickle.load(handle)
 
 def get_yearly_bow(subreddit_name):
-    with open('data/{}_yearly_bow.pickle'.format(subreddit_name), 'rb') as handle:
+    data_path = 'data/{}_yearly_bow.pickle'.format(subreddit_name)
+    if (not path.exists(data_path)): subreddit_to_yearly_bow(subreddit_name)
+    with open(data_path, 'rb') as handle:
         return pickle.load(handle)
 
 def main():
@@ -194,12 +206,12 @@ def main():
     # plt.show()
 
     # To create the BOW pickle files
-    subreddit_to_bow('learnmachinelearning')
-    subreddit_to_yearly_bow('learnmachinelearning')
+    # subreddit_to_bow('python')
+    # subreddit_to_yearly_bow('learnmachinelearning')
 
     # To get the saved BOWs
     # get_bow('learnmachinelearning')
-    # print(get_yearly_bow('learnmachinelearning')[2016])
+    print(get_yearly_bow('learnmachinelearning')[2016])
 
 if __name__ == "__main__":
     main()

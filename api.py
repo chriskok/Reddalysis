@@ -1,8 +1,7 @@
 # https://fastapi.tiangolo.com/tutorial/
 from fastapi import FastAPI, Form
-import sqlalchemy
-from sqlalchemy import create_engine
 from fastapi.middleware.cors import CORSMiddleware
+from wordclouds import get_bow, get_yearly_bow
 
 app = FastAPI()
 
@@ -14,17 +13,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# https://www.cdata.com/kb/tech/mongodb-python-sqlalchemy.rst
-# engine = create_engine("mongodb///?Server=MyServer&Port=27017&Database=test&User=test&Password=Password")
-
-# auto generated docs: http://127.0.0.1:8000/docs#/
-
 @app.get("/")
 async def root():
    return {"message": "Hello World"}
 
-@app.get("/subreddit_data")
-async def get_subreddit_data(subreddit: str = Form(...), year: int = Form(...)):
-   pass
+@app.get("/api/v1/recommendations")
+async def recommendations(anime_code: int = Query(""), n_recommendations: int = Query(5)):    
+    if anime_code:
+        recommendations = obtain_recommendations(anime_code, n_recommendations)
+        return JSONResponse(content=recommendations, status_code=200)
 
-# some changes
+    return JSONResponse(content={"Error": "The anime code is missing"}, status_code=400)
