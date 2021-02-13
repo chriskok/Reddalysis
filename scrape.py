@@ -153,7 +153,7 @@ def get_random_posts(subreddit, limit=1000):
         submission = reddit.subreddit(subreddit).random()
         if (submission is None): 
             print('r/{} DOES NOT allow RANDOM scraping.'.format(subreddit))
-            return {}
+            return post_dict
         sub_dict = save_submission(submission)
         current_ID = submission.id
         post_dict[current_ID] = sub_dict
