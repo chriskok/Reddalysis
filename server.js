@@ -4,7 +4,7 @@ var router = express.Router();
 var path = __dirname + '/public/';
 
 router.use(function (req,res,next) {
-  console.log("/" + req.method);
+  // console.log("/" + req.method);
   next();
 });
 

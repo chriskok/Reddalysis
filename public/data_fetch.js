@@ -28,7 +28,3 @@ function getYearlyBow(subreddit_name) {
 	);
 }
 
-function parse_input() {
-	const sub_name = document.getElementById('chosen_sub').value;
-	getYearlyBow(sub_name).then(response => console.log(response));
-}
