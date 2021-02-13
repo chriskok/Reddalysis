@@ -13,10 +13,9 @@ Project to investigate the history of selected subreddits with data science and 
 - get and store desired data (as pickle files): `python store.py -s <SUBREDDIT> -p` 
   - e.g. `python store.py -s learnpython -p`
 - preprocess the data (right now it's just with wordclouds): `python wordclouds.py`
-
-## Express Webserver Commands
-- Install the necessary node dependencies: `npm install`
-- Start the node webserver: `npm start`
+- start the API: `uvicorn api:app --reload`
+- start the node webserver: `npm start`
+  - If it's your first time, install the necessary node dependencies: `npm install`
 
 ## Database Commands
 - Clear the entire database: `python store.py -c` 
