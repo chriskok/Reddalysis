@@ -5,6 +5,7 @@
         "start": "node server.js"
     },
     "dependencies": {
-        "express": "latest"
+        "express":"*",
+        "body-parser":"*"
     }
 }
