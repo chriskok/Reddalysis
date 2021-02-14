@@ -13,18 +13,18 @@ function fetchJson(url, kwds) {
 }
 
 function getTest() {
-	return fetchJson(`http://localhost:8000/`);
+	return fetchJson(`https://reddalysis.herokuapp.com/`);
 }
 
 function getBow(subreddit_name) {
 	return fetchJson(
-		`https://reddalysis.herokuapp.com/api/v1/get_bow?subreddit_name=${subreddit_name}`
+		`https://reddalysis-api.herokuapp.com/api/v1/get_bow?subreddit_name=${subreddit_name}`
 	);
 }
 
 function getYearlyBow(subreddit_name) {
 	return fetchJson(
-		`https://reddalysis.herokuapp.com/api/v1/get_yearly_bow?subreddit_name=${subreddit_name}`
+		`https://reddalysis-api.herokuapp.com/api/v1/get_yearly_bow?subreddit_name=${subreddit_name}`
 	);
 }
 
