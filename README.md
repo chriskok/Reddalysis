@@ -40,3 +40,7 @@ python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
 ```
+
+## Deployment Details
+- API deployed on Heroku
+- Webserver deployed on Github Pages
