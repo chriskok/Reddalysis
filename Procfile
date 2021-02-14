@@ -1,1 +1,1 @@
-web: uvicorn --host 0.0.0.0 api:app --reload --port=${PORT:-5000}
+web: node server.js
