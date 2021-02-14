@@ -18,13 +18,13 @@ function getTest() {
 
 function getBow(subreddit_name) {
 	return fetchJson(
-		`http://localhost:8000/api/v1/get_bow?subreddit_name=${subreddit_name}`
+		`https://reddalysis.herokuapp.com/api/v1/get_bow?subreddit_name=${subreddit_name}`
 	);
 }
 
 function getYearlyBow(subreddit_name) {
 	return fetchJson(
-		`http://localhost:8000/api/v1/get_yearly_bow?subreddit_name=${subreddit_name}`
+		`https://reddalysis.herokuapp.com/api/v1/get_yearly_bow?subreddit_name=${subreddit_name}`
 	);
 }
 

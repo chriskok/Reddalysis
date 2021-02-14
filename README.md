@@ -44,4 +44,6 @@ pip install -r requirements.txt
 ## Deployment Details
 - API deployed on Heroku
   - To make changes, commit them with git and then: `git push heroku HEAD:master`
+  - For terminal access on heroku server: `heroku run bash -a reddalysis`
+  - For error logs: `heroku logs --tail `
 - Webserver deployed on Github Pages

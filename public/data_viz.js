@@ -49,7 +49,8 @@ function createWordCloud(input_data){
 }
 
 async function parse_input() {
-	const sub_name = document.getElementById('chosen_sub').value;
+  const sub_name = document.getElementById('chosen_sub').value;
+  console.log("Chosen Sub: " + sub_name);
 	yearlydata = await getYearlyBow(sub_name);
   console.log(yearlydata['2016']);
   
