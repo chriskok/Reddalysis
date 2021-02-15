@@ -1,6 +1,8 @@
 # Reddalysis
 Project to investigate the history of selected subreddits with data science and machine learning
 
+![Reddalysis Pipeline](/imgs/Red-Pipeline.png)
+
 ## Requirements
 - [Python](https://www.python.org/downloads/)
 - [MongoDB](https://docs.mongodb.com/manual/administration/install-community/)
