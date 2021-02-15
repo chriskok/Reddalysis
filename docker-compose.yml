@@ -1,0 +1,21 @@
+version: '3'
+services:
+  
+  api:
+    build: ./anime-recommendation-system
+    image: red_api:latest
+    container_name: red_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - "${PWD-.}/:/api"
+  
+  web:
+    build: ./front_end_animerec
+    image: red_web:latest
+    container_name: red_web
+    ports:
+      - "3000:3000"
+    # volumes:
+    #   - "${PWD-.}/front_end_animerec:/usr/src/app"
+    stdin_open: true
