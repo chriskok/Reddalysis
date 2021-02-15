@@ -2,7 +2,9 @@ version: '3'
 services:
   
   api:
-    build: ./anime-recommendation-system
+    build:
+        context: ./
+        dockerfile: Dockerfile.api
     image: red_api:latest
     container_name: red_api
     ports:
@@ -11,7 +13,9 @@ services:
       - "${PWD-.}/:/api"
   
   web:
-    build: ./front_end_animerec
+    build:
+        context: ./
+        dockerfile: Dockerfile.web
     image: red_web:latest
     container_name: red_web
     ports:
